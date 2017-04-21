@@ -9,11 +9,11 @@ def add_polygon( points, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(points, x2, y2, z2)
 
 def draw_polygons( matrix, screen, color ):
-    if len(matrix) % 3 != 0:
-        if len(matrix) < 3:
-            print "NEED AT LEAST 3 POINTS TO DRAW POLYGONS"
-        else:
-            print "bad matrix length: not divisible by 3"
+#    if len(matrix) % 3 != 0:
+    if len(matrix) < 3:
+        print "NEED AT LEAST 3 POINTS TO DRAW POLYGONS"
+        #else:
+         #   print "bad matrix length: not divisible by 3"
         return
     
     def draw_a_polygon(p0, p1, p2):

@@ -94,6 +94,7 @@ def parse_file( fname, edges, transform, screen, color ):
                     float(args[0]), float(args[1]), float(args[2]),
                     float(args[3]), float(args[4]), float(args[5]))
             matrix_mult(stack[-1], temp)
+            print temp
             draw_polygons(temp, screen, color)
 
         elif line == 'circle':
