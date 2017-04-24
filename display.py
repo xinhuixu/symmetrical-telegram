@@ -26,6 +26,7 @@ def plot( screen, color, x, y ):
         screen[newy][x] = color[:]
 
 def clear_screen( screen ):
+#    print 'clearing'
     for y in range( len(screen) ):
         for x in range( len(screen[y]) ):
             screen[y][x] = DEFAULT_COLOR[:]

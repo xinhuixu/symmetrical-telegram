@@ -52,13 +52,19 @@ def parse_file( fname, edges, transform, screen, color ):
 
     f = open(fname)
     lines = f.readlines()
-    
+
     I = new_matrix()
     ident(I)
     stack = [I]
 
+    def new_coord():
+        matrix_mult(stack[-1], edges)
+        draw_polygons(edges, screen, color)
+        edges[:] = []
+        
     step = 0.1
     c = 0
+
     while c < len(lines):
         line = lines[c].strip()
         #print ':' + line + ':'
@@ -67,64 +73,55 @@ def parse_file( fname, edges, transform, screen, color ):
             c+= 1
             args = lines[c].strip().split(' ')
             #print 'args\t' + str(args)
-            
-        if line == 'sphere':
+
+        if line == 'pop':
+            if len(stack) > 1:
+                stack.pop()
+            else:
+                print 'cannot pop ident stack'
+
+        elif line == 'push':
+            stack.append(deepcopy(stack[-1]))                                                                                                              
+        elif line == 'sphere':
             #print 'SPHERE\t' + str(args)
-            temp = new_matrix()
-            add_sphere(temp,
+            add_sphere(edges,
                        float(args[0]), float(args[1]), float(args[2]),
                        float(args[3]), step)
-            matrix_mult(stack[-1], temp)
-            draw_polygons(temp, screen, color)
-        
+            new_coord()
+            
         elif line == 'torus':
             #print 'TORUS\t' + str(args)
-            temp = new_matrix()
-            add_torus(temp,
+            add_torus(edges,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), step)
-            matrix_mult(stack[-1], temp)
-            draw_polygons(temp, screen, color)
-
+            new_coord()
         elif line == 'box':
-            
-            #print 'BOX\t' + str(args)
-            temp = new_matrix()
-            add_box(temp,
+            print 'BOX\t' + str(args)
+            add_box(edges,
                     float(args[0]), float(args[1]), float(args[2]),
                     float(args[3]), float(args[4]), float(args[5]))
-            matrix_mult(stack[-1], temp)
-            print temp
-            draw_polygons(temp, screen, color)
-
+            new_coord()
         elif line == 'circle':
             #print 'CIRCLE\t' + str(args)
-            temp = new_matrix()
-            add_circle(temp,
+            add_circle(edges,
                        float(args[0]), float(args[1]), float(args[2]),
                        float(args[3]), step)
-            matrix_mult(stack[-1], temp)
-            draw_lines(temp, screen, color)
 
         elif line == 'hermite' or line == 'bezier':
             #print 'curve\t' + line + ": " + str(args)
-            temp = new_matrix()
-            add_curve(temp,
+            add_curve(edges,
                       float(args[0]), float(args[1]),
                       float(args[2]), float(args[3]),
                       float(args[4]), float(args[5]),
                       float(args[6]), float(args[7]),
-                      step, line)
-            matrix_mult(stack[-1], temp)
-            draw_lines(temp, screen, color)
+                      step, line)                      
+            
         elif line == 'line':            
             #print 'LINE\t' + str(args)
-            temp =new_matrix()
-            add_edge( temp,
+
+            add_edge( edges,
                       float(args[0]), float(args[1]), float(args[2]),
                       float(args[3]), float(args[4]), float(args[5]) )
-            matrix_mult(stack[-1], temp)
-            draw_lines(temp, screen, color)
 
         elif line == 'scale':
             #print 'SCALE\t' + str(args)
@@ -148,26 +145,22 @@ def parse_file( fname, edges, transform, screen, color ):
                 t = make_rotZ(theta)
             matrix_mult(t, stack[-1])
                 
-        elif line == 'pop':
-            if len(stack) > 1:
-                stack.pop()
-            else:
-                print 'cannot pop ident stack'
-        elif line == 'push':
-            stack.append(deepcopy(stack[-1]))
-
         elif line == 'clear':
             edges = []
             
         elif line == 'ident':
             ident(transform)
 
+        elif line == 'apply':
+            matrix_mult( transform, edges )
+
         elif line == 'display' or line == 'save':
-            clear_screen(screen)
+            #clear_screen(screen)
             #draw_lines(edges, screen, color)
             #draw_polygons(edges, screen, color)
 
             if line == 'display':
+                print edges
                 display(screen)
             else:
                 save_extension(screen, args[0])
