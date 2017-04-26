@@ -61,7 +61,8 @@ def parse_file( fname, edges, transform, screen, color ):
         matrix_mult(stack[-1], edges)
         if is_flat:
             draw_lines(edges, screen, color)
-        draw_polygons(edges, screen, color)
+        else:
+            draw_polygons(edges, screen, color)
         edges[:] = []
 
         
@@ -100,7 +101,6 @@ def parse_file( fname, edges, transform, screen, color ):
                       float(args[3]), float(args[4]), step)
             new_coord()
         elif line == 'box':
-            print 'BOX\t' + str(args)
             add_box(edges,
                     float(args[0]), float(args[1]), float(args[2]),
                     float(args[3]), float(args[4]), float(args[5]))
@@ -109,7 +109,7 @@ def parse_file( fname, edges, transform, screen, color ):
             #print 'CIRCLE\t' + str(args)
             add_circle(edges,
                        float(args[0]), float(args[1]), float(args[2]),
-                       float(args[3]), step)
+                       float(args[3]), 0.005)
             new_coord(True)
 
         elif line == 'hermite' or line == 'bezier':
