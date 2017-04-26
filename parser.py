@@ -63,7 +63,7 @@ def parse_file( fname, edges, transform, screen, color ):
             draw_lines(edges, screen, color)
         draw_polygons(edges, screen, color)
         edges[:] = []
-        print "clear:", edges
+
         
     step = 0.1
     c = 0
@@ -80,13 +80,12 @@ def parse_file( fname, edges, transform, screen, color ):
         if line == 'pop':
             if len(stack) > 1:
                 stack.pop()
-                print 'POP', stack                
             else:
                 print 'cannot pop ident stack'
 
         elif line == 'push':
             stack.append(deepcopy(stack[-1]))
-            print 'PUSH', stack                                                           
+
         elif line == 'sphere':
             #print 'SPHERE\t' + str(args)
             add_sphere(edges,
